@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "EduMaster 360"
+version = "1.0.0"
+id = "artifacts/edumaster"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20630
+
+[services.development]
+run = "pnpm --filter @workspace/edumaster run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/edumaster", "run", "build" ]
+publicDir = "artifacts/edumaster/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20630"
+BASE_PATH = "/"

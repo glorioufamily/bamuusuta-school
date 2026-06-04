@@ -1,0 +1,299 @@
+You are a senior full-stack software architect and engineer.
+
+Build a complete production-ready School Intelligence System called:
+
+"EduMaster 360 – School Operating System"
+
+This system is a full school ERP + AI monitoring + analytics + communication platform for schools.
+
+---
+
+# 🧠 CORE PURPOSE
+
+The system must allow a school to fully manage:
+
+- Students (academic, discipline, attendance, fees)
+- Teachers (performance, attendance, lesson tracking)
+- Parents (monitor child progress)
+- Headteacher (full control dashboard)
+- Director of Studies (academic control + announcements)
+- Bursar (fees management)
+- Admin (system control)
+- Students (self-monitoring dashboard)
+
+It must also include:
+- Competitive ranking system
+- School intelligence analytics
+- Risk prediction for students
+- Real-time alerts
+- Suggestion box system
+- Landing page communication system
+
+---
+
+# 🏗️ TECHNOLOGY STACK (MANDATORY)
+
+Frontend:
+- React (Vite recommended)
+- Tailwind CSS
+- Framer Motion (for UI animations)
+- React Router
+- Axios
+- Socket.io-client
+
+Backend:
+- Node.js
+- Express.js
+- Socket.io
+- JWT authentication
+- bcrypt
+
+Database:
+- MongoDB (Mongoose ODM)
+
+Optional integrations:
+- Cloudinary (image uploads)
+- Twilio (SMS notifications)
+- WhatsApp API (future extension)
+
+---
+
+# 🧱 SYSTEM ARCHITECTURE
+
+Build a monorepo structure:
+
+/backend
+/frontend
+
+Backend modules:
+- auth
+- students
+- teachers
+- classes
+- marks
+- attendance
+- fees
+- discipline
+- announcements
+- suggestions
+- analytics engine
+- notifications system
+
+Frontend modules:
+- Login (TikTok-style single page auth modal)
+- Landing page (public school communication page)
+- Headteacher dashboard
+- Director of Studies dashboard
+- Teacher dashboard
+- Bursar dashboard
+- Student portal
+- Parent portal
+- Class view page
+- Student 360 profile page
+- Suggestion inbox UI
+
+---
+
+# 🧠 CORE DATA MODEL (MUST IMPLEMENT)
+
+## Student (central object)
+Must store:
+- personal info (name, photo, class, DOB)
+- academics (marks per subject, term, teacherId)
+- attendance records
+- discipline records
+- fees records
+- performance score
+- risk score
+
+## Teacher
+- subjects
+- classes
+- attendance
+- marks submitted
+- performance score
+
+## Fees
+- studentId
+- amount paid
+- balance
+- bursarId
+- term
+
+## Suggestions
+- senderId
+- role
+- message
+- attachments (images optional)
+- status (pending, reviewed, resolved)
+- timestamps
+
+## Announcements (Landing Page)
+- posted by DOS/admin
+- title
+- message
+- visibility (public school-wide)
+
+---
+
+# 🔐 ROLE SYSTEM (VERY IMPORTANT)
+
+Implement RBAC (Role-Based Access Control):
+
+Roles:
+- admin (full system access)
+- headteacher (full monitoring + analytics)
+- DOS (academic + announcements)
+- teacher (marks + attendance only)
+- bursar (fees only)
+- student (view own data only)
+- parent (view child only)
+
+---
+
+# 📊 CORE FEATURES
+
+## 1. Student 360 Profile
+Single page showing:
+- academics
+- discipline
+- attendance
+- fees
+- teacher remarks
+- risk score
+- timeline of events
+
+---
+
+## 2. Competitive Ranking System
+Rank students by:
+- academics (40%)
+- discipline (20%)
+- attendance (15%)
+- participation (10%)
+- leadership (10%)
+- community (5%)
+
+Generate:
+- class ranking
+- school ranking
+- subject ranking
+
+---
+
+## 3. Teacher Monitoring
+Track:
+- attendance
+- lesson coverage
+- marks submitted
+- student outcomes
+- complaints
+
+---
+
+## 4. Bursar System
+- upload payments
+- track balances
+- generate financial reports
+
+---
+
+## 5. DOS Landing Page Control
+DOS can:
+- post announcements
+- update school news
+- publish events
+
+Landing page is a live communication board for the whole school.
+
+---
+
+## 6. Suggestion Box System
+All users can submit suggestions:
+- includes name, photo, role, message, attachments
+BUT ONLY ADMIN AND HEADTEACHER CAN VIEW FULL CONTENT.
+
+Must include:
+- categories auto-classification (AI logic or rules)
+- priority levels (high/medium/low)
+- admin response system
+
+---
+
+## 7. Analytics Engine
+Generate:
+- school health score
+- at-risk students
+- failing students prediction
+- teacher performance scores
+- attendance trends
+- discipline trends
+
+---
+
+## 8. Real-Time System
+Use Socket.io for:
+- alerts to headteacher
+- teacher late notifications
+- student risk alerts
+- new suggestion notifications
+
+---
+
+# 🧠 UI REQUIREMENTS
+
+Frontend must be modern and mobile-first:
+
+- TikTok-style login modal (no page reload)
+- glassmorphism dashboard design
+- smooth transitions (Framer Motion)
+- cards-based UI
+- image-based student/teacher profiles
+- clean admin dashboards
+
+Landing page must include:
+- school banner image
+- announcements feed
+- top students
+- best classes
+- achievements
+
+---
+
+# 🔔 NOTIFICATION SYSTEM
+
+Implement:
+- in-app notifications
+- optional SMS (future)
+- WhatsApp integration ready structure
+
+---
+
+# 🧪 OUTPUT REQUIREMENTS
+
+Generate:
+1. Full backend code (Express + MongoDB models + routes)
+2. Full frontend React code
+3. Folder structure
+4. Authentication system
+5. Role middleware
+6. Basic working UI dashboards
+7. Sample seed data
+8. README with setup instructions
+
+System must run locally with:
+- npm install
+- npm run dev (frontend)
+- npm run start (backend)
+
+---
+
+# 🚀 GOAL
+
+This system is NOT a simple CRUD app.
+
+It is a:
+
+"School Operating System with intelligence, analytics, monitoring, and communication built in."
+
+Build it clean, modular, scalable, and production-ready.
