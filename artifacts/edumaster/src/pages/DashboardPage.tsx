@@ -16,10 +16,12 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { StatCard } from "@/components/ui/StatCard";
 import { ScoreCircle } from "@/components/ui/ScoreCircle";
-import { Users, GraduationCap, Calendar, CreditCard, AlertTriangle, TrendingUp, BookOpen, Activity, ArrowUpRight, Trophy } from "lucide-react";
+import { Users, GraduationCap, Calendar, CreditCard, AlertTriangle, TrendingUp, BookOpen, Activity, ArrowUpRight, Trophy, Eye, ArrowRight } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Link } from "wouter";
 
 export function DashboardPage() {
   const { role, user } = useAuth();
@@ -71,30 +73,42 @@ function AdminDashboard() {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard 
-            title="Total Students" 
-            value={summary?.totalStudents || 0} 
-            icon={Users}
-            className="border-l-4 border-l-primary"
-          />
-          <StatCard 
-            title="Attendance Today" 
-            value={`${summary?.attendanceToday || 0}%`} 
-            icon={Calendar}
-            className="border-l-4 border-l-chart-2"
-          />
-          <StatCard 
-            title="Fees Collection" 
-            value={`${summary?.feesCollectionRate || 0}%`} 
-            icon={CreditCard}
-            className="border-l-4 border-l-chart-3"
-          />
-          <StatCard 
-            title="At-Risk Students" 
-            value={summary?.atRiskCount || 0} 
-            icon={AlertTriangle}
-            className="border-l-4 border-l-destructive"
-          />
+          <Link href="/students">
+            <StatCard 
+              title="Total Students" 
+              value={summary?.totalStudents || 0} 
+              icon={Users}
+              className="border-l-4 border-l-primary cursor-pointer hover:shadow-md transition-shadow"
+              description="View all students →"
+            />
+          </Link>
+          <Link href="/intelligence?tab=attendance">
+            <StatCard 
+              title="Attendance Today" 
+              value={`${summary?.attendanceToday || 0}%`} 
+              icon={Calendar}
+              className="border-l-4 border-l-chart-2 cursor-pointer hover:shadow-md transition-shadow"
+              description="View attendance details →"
+            />
+          </Link>
+          <Link href="/intelligence?tab=fees">
+            <StatCard 
+              title="Fees Collection" 
+              value={`${summary?.feesCollectionRate || 0}%`} 
+              icon={CreditCard}
+              className="border-l-4 border-l-chart-3 cursor-pointer hover:shadow-md transition-shadow"
+              description="View fees details →"
+            />
+          </Link>
+          <Link href="/intelligence?tab=at-risk">
+            <StatCard 
+              title="At-Risk Students" 
+              value={summary?.atRiskCount || 0} 
+              icon={AlertTriangle}
+              className="border-l-4 border-l-destructive cursor-pointer hover:shadow-md transition-shadow"
+              description="View at-risk students →"
+            />
+          </Link>
         </div>
       )}
 
@@ -131,15 +145,20 @@ function AdminDashboard() {
             ) : (
               <div className="space-y-4">
                 {atRisk?.slice(0, 5).map(student => (
-                  <div key={student.id} className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-background hover:bg-muted/50 transition-colors">
-                    <div>
-                      <p className="font-medium text-sm">{student.name}</p>
-                      <p className="text-xs text-muted-foreground">{student.className}</p>
+                  <Link key={student.id} href={`/students/${student.id}`}>
+                    <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-background hover:bg-muted/50 hover:border-primary/30 transition-colors cursor-pointer group">
+                      <div>
+                        <p className="font-medium text-sm group-hover:text-primary transition-colors">{student.name}</p>
+                        <p className="text-xs text-muted-foreground">{student.className}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={student.riskLevel === 'high' ? 'destructive' : 'secondary'} className={student.riskLevel === 'high' ? '' : 'text-amber-600 bg-amber-100 border-amber-200'}>
+                          {student.riskLevel}
+                        </Badge>
+                        <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
                     </div>
-                    <Badge variant={student.riskLevel === 'high' ? 'destructive' : 'secondary'} className={student.riskLevel === 'high' ? '' : 'text-amber-600 bg-amber-100 border-amber-200'}>
-                      {student.riskLevel}
-                    </Badge>
-                  </div>
+                  </Link>
                 ))}
                 {(!atRisk || atRisk.length === 0) && (
                   <div className="text-center py-6 text-muted-foreground text-sm">

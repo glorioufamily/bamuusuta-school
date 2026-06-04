@@ -1,0 +1,174 @@
+IMPORTANT: DO NOT rewrite, replace, redesign, rename, delete, or restructure the existing project. Keep all existing files, routes, database models, pages, dashboards, authentication, and functionality working exactly as they are now.
+
+Only ADD new functionality and integrate it into the current system.
+
+FEATURE REQUEST: HEADTEACHER STUDENT INTELLIGENCE CENTER
+
+Goal:
+Improve the Headteacher dashboard so that the Headteacher can investigate individual students and identify the root causes of academic, discipline, attendance, or financial problems.
+
+Requirements:
+
+1. STUDENT 360 PROFILE
+   Create a detailed student profile page accessible from the Headteacher dashboard.
+
+Each student profile must display:
+
+* Student photo
+* Full name
+* Student ID
+* Class and stream
+* Date of birth
+* Parent/guardian information
+* Contact information
+* Admission date
+
+Academic Information:
+
+* Subject marks history
+* Exam history
+* Performance trends
+* Rankings
+* Teacher comments
+* Academic strengths
+* Academic weaknesses
+
+Attendance Information:
+
+* Attendance percentage
+* Daily attendance records
+* Late arrivals
+* Absence history
+
+Discipline Information:
+
+* Warnings
+* Suspensions
+* Counseling records
+* Discipline incidents
+* Dates and descriptions
+
+Fees Information:
+
+* Fees paid
+* Balance remaining
+* Payment history
+* Payment dates
+* Recorded by which bursar
+
+2. INVESTIGATION MODE
+
+The Headteacher should not only see totals.
+
+Example:
+
+Instead of:
+"Discipline Cases = 50"
+
+Allow the Headteacher to click and see:
+
+* Exact students involved
+* Incident details
+* Date
+* Class
+* Action taken
+* Reporting teacher
+
+For every discipline incident show:
+
+Student Name
+Student Photo
+Class
+Date
+Description
+Action Taken
+
+3. ROOT CAUSE ANALYSIS
+
+Create drill-down views.
+
+Example:
+
+If a student's performance drops:
+
+Show:
+
+* Attendance changes
+* Discipline incidents
+* Homework completion trends
+* Teacher remarks
+
+Goal:
+Help the Headteacher understand WHY a student is struggling.
+
+4. CLASS INVESTIGATION PAGE
+
+When the Headteacher clicks a class:
+
+Display:
+
+* Student list
+* Student photos
+* Performance indicators
+* Attendance indicators
+* Discipline indicators
+
+When a student is clicked:
+Open the Student 360 Profile.
+
+5. DASHBOARD IMPROVEMENT
+
+Keep all existing dashboard statistics.
+
+Add clickable drill-down actions:
+
+* View Students
+* View Discipline Cases
+* View Attendance Details
+* View Fees Details
+
+Do not remove existing summary cards.
+
+6. DATABASE CHANGES
+
+Only add fields if necessary.
+
+Do not break existing collections.
+
+Prefer extending existing Student models with:
+
+* academicHistory
+* attendanceHistory
+* disciplineHistory
+* feeHistory
+* teacherRemarks
+
+Do not remove existing fields.
+
+7. UI REQUIREMENTS
+
+Maintain current design and layout.
+
+Do not redesign the application.
+
+Add:
+
+* Student profile page
+* Investigation panels
+* Detailed tables
+* Student photo cards
+
+Use existing styles, components, and navigation.
+
+8. SAFETY REQUIREMENT
+
+Before making any code changes:
+
+* Analyze the current project structure.
+* Reuse existing models.
+* Reuse existing routes.
+* Reuse existing UI components.
+* Do not generate a completely new project.
+* Do not overwrite existing functionality.
+
+Implement this as an extension to the current system only.

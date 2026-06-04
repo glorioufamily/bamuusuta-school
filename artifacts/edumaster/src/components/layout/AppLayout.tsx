@@ -28,7 +28,8 @@ import {
   MessageSquare, 
   BarChart, 
   Trophy,
-  LogOut
+  LogOut,
+  Eye
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -45,6 +46,12 @@ function getNavItems(role: string | null) {
       { title: "Analytics", url: "/analytics", icon: BarChart, roles: ["admin", "headteacher"] },
       { title: "Rankings", url: "/rankings", icon: Trophy, roles: ["admin", "headteacher"] },
       { title: "Suggestions", url: "/suggestions", icon: MessageSquare, roles: ["admin", "headteacher"] },
+    );
+  }
+
+  if (role === "headteacher") {
+    items.push(
+      { title: "Intelligence Center", url: "/intelligence", icon: Eye, roles: ["headteacher"] },
     );
   }
 

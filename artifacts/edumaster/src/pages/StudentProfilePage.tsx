@@ -1,12 +1,14 @@
 import { useParams, Link } from "wouter";
 import { useGetStudentProfile } from "@workspace/api-client-react";
+import { useQuery } from "@tanstack/react-query";
+import { customFetch } from "@workspace/api-client-react/custom-fetch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { ArrowLeft, MapPin, Calendar, Phone, Activity, Trophy, AlertTriangle, ShieldCheck } from "lucide-react";
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { ArrowLeft, MapPin, Calendar, Phone, Activity, Trophy, AlertTriangle, ShieldCheck, Search, TrendingDown, TrendingUp, BookOpen, CreditCard, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function StudentProfilePage() {
@@ -14,6 +16,11 @@ export function StudentProfilePage() {
   const id = parseInt(params.id || "0");
   
   const { data, isLoading } = useGetStudentProfile(id, { query: { enabled: !!id } });
+  const { data: rootCause, isLoading: loadingRootCause } = useQuery({
+    queryKey: ["/api/intelligence/root-cause", id],
+    queryFn: () => customFetch(`/api/intelligence/root-cause/${id}`),
+    enabled: !!id,
+  });
 
   if (isLoading) {
     return <div className="p-8">Loading profile...</div>;
@@ -93,11 +100,14 @@ export function StudentProfilePage() {
         {/* Right Column: Detailed Info Tabs */}
         <div className="md:col-span-2 lg:col-span-3">
           <Tabs defaultValue="academics" className="w-full">
-            <TabsList className="grid grid-cols-4 bg-muted/50 p-1 rounded-xl h-auto">
+            <TabsList className="grid grid-cols-5 bg-muted/50 p-1 rounded-xl h-auto">
               <TabsTrigger value="academics" className="py-2.5 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Academics</TabsTrigger>
               <TabsTrigger value="attendance" className="py-2.5 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Attendance</TabsTrigger>
               <TabsTrigger value="discipline" className="py-2.5 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Discipline</TabsTrigger>
               <TabsTrigger value="fees" className="py-2.5 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Fees</TabsTrigger>
+              <TabsTrigger value="rootcause" className="py-2.5 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center gap-1">
+                <Search className="h-3.5 w-3.5" /> Root Cause
+              </TabsTrigger>
             </TabsList>
             
             {/* Academics Tab */}
@@ -314,6 +324,163 @@ export function StudentProfilePage() {
                   </Table>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Root Cause Analysis Tab */}
+            <TabsContent value="rootcause" className="space-y-4 mt-6">
+              {loadingRootCause ? (
+                <div className="space-y-4">{[1,2,3].map(i => <div key={i} className="h-28 animate-pulse bg-muted rounded-xl" />)}</div>
+              ) : !rootCause ? (
+                <div className="text-center py-12 text-muted-foreground">Unable to load root cause analysis.</div>
+              ) : (
+                <>
+                  {/* Performance Trend */}
+                  {(rootCause as any).termTrend?.length > 1 && (
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="flex items-center gap-2 text-base">
+                          {(rootCause as any).performanceDrop
+                            ? <TrendingDown className="h-5 w-5 text-destructive" />
+                            : <TrendingUp className="h-5 w-5 text-emerald-500" />}
+                          Academic Trend
+                          {(rootCause as any).performanceDrop && (
+                            <Badge variant="destructive" className="text-xs ml-2">Performance Drop Detected</Badge>
+                          )}
+                        </CardTitle>
+                        {(rootCause as any).dropDescription && (
+                          <p className="text-sm text-muted-foreground">{(rootCause as any).dropDescription}</p>
+                        )}
+                      </CardHeader>
+                      <CardContent>
+                        <div className="h-[180px] w-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={(rootCause as any).termTrend}>
+                              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                              <XAxis dataKey="term" stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} axisLine={false} />
+                              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+                              <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--background))', borderRadius: '8px', borderColor: 'hsl(var(--border))' }} />
+                              <Line type="monotone" dataKey="average" stroke="hsl(var(--primary))" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Avg %" />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Root Cause Factors */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                      <Eye className="h-4 w-4 text-primary" /> Identified Root Cause Factors
+                    </h3>
+                    {(rootCause as any).rootCauseFactors?.map((factor: any, i: number) => (
+                      <Card key={i} className={`border-l-4 ${
+                        factor.severity === 'high' ? 'border-l-destructive bg-red-50/30' :
+                        factor.severity === 'medium' ? 'border-l-amber-400 bg-amber-50/20' :
+                        'border-l-emerald-400 bg-emerald-50/20'
+                      }`}>
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-semibold text-sm text-foreground">{factor.factor}</span>
+                                <Badge variant="outline" className={`text-[10px] capitalize ${
+                                  factor.severity === 'high' ? 'border-red-300 text-red-700 bg-red-50' :
+                                  factor.severity === 'medium' ? 'border-amber-300 text-amber-700 bg-amber-50' :
+                                  'border-emerald-300 text-emerald-700 bg-emerald-50'
+                                }`}>{factor.severity}</Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground mb-2">{factor.description}</p>
+                              <div className="bg-background/80 rounded-lg p-2 border border-border/50">
+                                <p className="text-xs font-medium text-foreground mb-0.5">Recommendation</p>
+                                <p className="text-xs text-muted-foreground">{factor.recommendation}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {/* Subject Strengths & Weaknesses */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm text-emerald-700 flex items-center gap-2">
+                          <TrendingUp className="h-4 w-4" /> Academic Strengths
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {(rootCause as any).strengths?.length > 0 ? (
+                          <div className="space-y-2">
+                            {(rootCause as any).strengths.map((s: any, i: number) => (
+                              <div key={i} className="flex items-center justify-between">
+                                <span className="text-sm text-foreground">{s.subject}</span>
+                                <div className="flex items-center gap-2">
+                                  <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
+                                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${s.average}%` }} />
+                                  </div>
+                                  <span className="text-xs font-medium text-emerald-700 w-10 text-right">{s.average}%</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : <p className="text-sm text-muted-foreground py-2">No subjects above 70% yet.</p>}
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm text-red-700 flex items-center gap-2">
+                          <TrendingDown className="h-4 w-4" /> Areas for Improvement
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {(rootCause as any).weaknesses?.length > 0 ? (
+                          <div className="space-y-2">
+                            {(rootCause as any).weaknesses.map((w: any, i: number) => (
+                              <div key={i} className="flex items-center justify-between">
+                                <span className="text-sm text-foreground">{w.subject}</span>
+                                <div className="flex items-center gap-2">
+                                  <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
+                                    <div className="h-full bg-red-400 rounded-full" style={{ width: `${w.average}%` }} />
+                                  </div>
+                                  <span className="text-xs font-medium text-red-700 w-10 text-right">{w.average}%</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : <p className="text-sm text-muted-foreground py-2">No major subject weaknesses.</p>}
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Teacher Remarks */}
+                  {(rootCause as any).teacherRemarks?.length > 0 && (
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <BookOpen className="h-4 w-4 text-primary" /> Teacher Remarks
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {(rootCause as any).teacherRemarks.map((r: any, i: number) => (
+                            <div key={i} className="flex gap-3 p-3 bg-muted/30 rounded-lg border border-border/50">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Badge variant="outline" className="text-[10px]">{r.subject}</Badge>
+                                  <Badge variant="outline" className="text-[10px]">{r.term}</Badge>
+                                  <span className="text-xs text-muted-foreground">{r.percentage}%</span>
+                                </div>
+                                <p className="text-sm text-muted-foreground italic">"{r.remark}"</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </>
+              )}
             </TabsContent>
           </Tabs>
         </div>

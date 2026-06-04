@@ -26,6 +26,8 @@ import { AnnouncementsPage } from "@/pages/AnnouncementsPage";
 import { SuggestionsPage } from "@/pages/SuggestionsPage";
 import { AnalyticsPage } from "@/pages/AnalyticsPage";
 import { RankingsPage } from "@/pages/RankingsPage";
+import { HeadteacherIntelligencePage } from "@/pages/HeadteacherIntelligencePage";
+import { ClassInvestigationPage } from "@/pages/ClassInvestigationPage";
 
 // Initialize the API client so it can inject the auth token
 initApiClient();
@@ -104,6 +106,16 @@ function Router() {
       <Route path="/rankings">
         <ProtectedRoute>
           <RankingsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/intelligence">
+        <ProtectedRoute>
+          <HeadteacherIntelligencePage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/intelligence/class/:id">
+        <ProtectedRoute>
+          <ClassInvestigationPage />
         </ProtectedRoute>
       </Route>
       <Route component={NotFound} />
