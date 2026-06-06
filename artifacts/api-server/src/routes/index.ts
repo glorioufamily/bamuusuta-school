@@ -14,6 +14,8 @@ import analyticsRouter from "./analytics";
 import rankingsRouter from "./rankings";
 import notificationsRouter from "./notifications";
 import intelligenceRouter from "./intelligence";
+import brandingRouter from "./branding";
+import clubsRouter from "./clubs";
 
 const router: IRouter = Router();
 
@@ -32,5 +34,7 @@ router.use(analyticsRouter);
 router.use(rankingsRouter);
 router.use(notificationsRouter);
 router.use(intelligenceRouter);
+router.use(brandingRouter);
+router.use(clubsRouter);
 
 export default router;

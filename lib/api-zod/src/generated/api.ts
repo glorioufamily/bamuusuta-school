@@ -30,7 +30,7 @@ export const LoginResponse = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "name": zod.string(),
-  "role": zod.enum(['admin', 'headteacher', 'dos', 'teacher', 'bursar', 'student', 'parent']),
+  "role": zod.enum(['admin', 'headteacher', 'dos', 'teacher', 'bursar', 'student', 'parent', 'club']),
   "avatarUrl": zod.string().nullish(),
   "linkedId": zod.number().nullish()
 })
@@ -53,7 +53,7 @@ export const GetMeResponse = zod.object({
   "id": zod.number(),
   "username": zod.string(),
   "name": zod.string(),
-  "role": zod.enum(['admin', 'headteacher', 'dos', 'teacher', 'bursar', 'student', 'parent']),
+  "role": zod.enum(['admin', 'headteacher', 'dos', 'teacher', 'bursar', 'student', 'parent', 'club']),
   "avatarUrl": zod.string().nullish(),
   "linkedId": zod.number().nullish()
 })
@@ -666,6 +666,117 @@ export const UpdateDisciplineRecordResponse = zod.object({
 
 
 /**
+ * @summary Get school branding settings
+ */
+export const GetSchoolBrandingResponse = zod.object({
+  "id": zod.number(),
+  "schoolName": zod.string(),
+  "motto": zod.string().nullish(),
+  "logoUrl": zod.string().nullish(),
+  "contactInfo": zod.string().nullish(),
+  "address": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "welcomeMessage": zod.string().nullish(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Update school branding (admin only)
+ */
+export const UpdateSchoolBrandingBody = zod.object({
+  "schoolName": zod.string().optional(),
+  "motto": zod.string().nullish(),
+  "logoUrl": zod.string().nullish(),
+  "contactInfo": zod.string().nullish(),
+  "address": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "welcomeMessage": zod.string().nullish()
+})
+
+export const UpdateSchoolBrandingResponse = zod.object({
+  "id": zod.number(),
+  "schoolName": zod.string(),
+  "motto": zod.string().nullish(),
+  "logoUrl": zod.string().nullish(),
+  "contactInfo": zod.string().nullish(),
+  "address": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "welcomeMessage": zod.string().nullish(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary List all clubs
+ */
+export const ListClubsResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "logoUrl": zod.string().nullish(),
+  "patron": zod.string().nullish(),
+  "description": zod.string().nullish(),
+  "userId": zod.number().nullish(),
+  "createdAt": zod.string()
+})
+export const ListClubsResponse = zod.array(ListClubsResponseItem)
+
+
+/**
+ * @summary Create a club (admin only)
+ */
+export const CreateClubBody = zod.object({
+  "name": zod.string(),
+  "logoUrl": zod.string().nullish(),
+  "patron": zod.string().nullish(),
+  "description": zod.string().nullish(),
+  "username": zod.string().nullish(),
+  "password": zod.string().nullish()
+})
+
+
+/**
+ * @summary Update a club (admin only)
+ */
+export const UpdateClubParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateClubBody = zod.object({
+  "name": zod.string().optional(),
+  "logoUrl": zod.string().nullish(),
+  "patron": zod.string().nullish(),
+  "description": zod.string().nullish()
+})
+
+export const UpdateClubResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "logoUrl": zod.string().nullish(),
+  "patron": zod.string().nullish(),
+  "description": zod.string().nullish(),
+  "userId": zod.number().nullish(),
+  "createdAt": zod.string()
+})
+
+
+/**
+ * @summary Delete a club (admin only)
+ */
+export const DeleteClubParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteClubResponse = zod.object({
+  "success": zod.boolean(),
+  "message": zod.string().optional()
+})
+
+
+/**
  * @summary List announcements
  */
 export const ListAnnouncementsQueryParams = zod.object({
@@ -678,9 +789,16 @@ export const ListAnnouncementsResponseItem = zod.object({
   "content": zod.string(),
   "authorId": zod.number(),
   "authorName": zod.string().nullish(),
+  "authorRole": zod.string().nullish(),
+  "authorLogoUrl": zod.string().nullish(),
   "visibility": zod.enum(['public', 'staff', 'students', 'parents']),
   "category": zod.enum(['general', 'event', 'achievement', 'alert', 'academic']),
   "imageUrl": zod.string().nullish(),
+  "videoUrl": zod.string().nullish(),
+  "documentUrl": zod.string().nullish(),
+  "externalLink": zod.string().nullish(),
+  "eventDate": zod.string().nullish(),
+  "clubId": zod.number().nullish(),
   "pinned": zod.boolean(),
   "createdAt": zod.string()
 })
@@ -696,6 +814,10 @@ export const CreateAnnouncementBody = zod.object({
   "visibility": zod.enum(['public', 'staff', 'students', 'parents']),
   "category": zod.enum(['general', 'event', 'achievement', 'alert', 'academic']),
   "imageUrl": zod.string().nullish(),
+  "videoUrl": zod.string().nullish(),
+  "documentUrl": zod.string().nullish(),
+  "externalLink": zod.string().nullish(),
+  "eventDate": zod.string().nullish(),
   "pinned": zod.boolean().optional()
 })
 
@@ -712,6 +834,11 @@ export const UpdateAnnouncementBody = zod.object({
   "content": zod.string().optional(),
   "visibility": zod.enum(['public', 'staff', 'students', 'parents']).optional(),
   "category": zod.enum(['general', 'event', 'achievement', 'alert', 'academic']).optional(),
+  "imageUrl": zod.string().nullish(),
+  "videoUrl": zod.string().nullish(),
+  "documentUrl": zod.string().nullish(),
+  "externalLink": zod.string().nullish(),
+  "eventDate": zod.string().nullish(),
   "pinned": zod.boolean().optional()
 })
 
@@ -721,9 +848,16 @@ export const UpdateAnnouncementResponse = zod.object({
   "content": zod.string(),
   "authorId": zod.number(),
   "authorName": zod.string().nullish(),
+  "authorRole": zod.string().nullish(),
+  "authorLogoUrl": zod.string().nullish(),
   "visibility": zod.enum(['public', 'staff', 'students', 'parents']),
   "category": zod.enum(['general', 'event', 'achievement', 'alert', 'academic']),
   "imageUrl": zod.string().nullish(),
+  "videoUrl": zod.string().nullish(),
+  "documentUrl": zod.string().nullish(),
+  "externalLink": zod.string().nullish(),
+  "eventDate": zod.string().nullish(),
+  "clubId": zod.number().nullish(),
   "pinned": zod.boolean(),
   "createdAt": zod.string()
 })

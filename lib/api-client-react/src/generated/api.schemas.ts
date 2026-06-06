@@ -34,6 +34,7 @@ export const UserRole = {
   bursar: 'bursar',
   student: 'student',
   parent: 'parent',
+  club: 'club',
 } as const;
 
 export interface User {
@@ -523,10 +524,24 @@ export interface Announcement {
   authorId: number;
   /** @nullable */
   authorName?: string | null;
+  /** @nullable */
+  authorRole?: string | null;
+  /** @nullable */
+  authorLogoUrl?: string | null;
   visibility: AnnouncementVisibility;
   category: AnnouncementCategory;
   /** @nullable */
   imageUrl?: string | null;
+  /** @nullable */
+  videoUrl?: string | null;
+  /** @nullable */
+  documentUrl?: string | null;
+  /** @nullable */
+  externalLink?: string | null;
+  /** @nullable */
+  eventDate?: string | null;
+  /** @nullable */
+  clubId?: number | null;
   pinned: boolean;
   createdAt: string;
 }
@@ -559,6 +574,14 @@ export interface AnnouncementInput {
   category: AnnouncementInputCategory;
   /** @nullable */
   imageUrl?: string | null;
+  /** @nullable */
+  videoUrl?: string | null;
+  /** @nullable */
+  documentUrl?: string | null;
+  /** @nullable */
+  externalLink?: string | null;
+  /** @nullable */
+  eventDate?: string | null;
   pinned?: boolean;
 }
 
@@ -588,7 +611,93 @@ export interface AnnouncementUpdate {
   content?: string;
   visibility?: AnnouncementUpdateVisibility;
   category?: AnnouncementUpdateCategory;
+  /** @nullable */
+  imageUrl?: string | null;
+  /** @nullable */
+  videoUrl?: string | null;
+  /** @nullable */
+  documentUrl?: string | null;
+  /** @nullable */
+  externalLink?: string | null;
+  /** @nullable */
+  eventDate?: string | null;
   pinned?: boolean;
+}
+
+export interface SchoolBranding {
+  id: number;
+  schoolName: string;
+  /** @nullable */
+  motto?: string | null;
+  /** @nullable */
+  logoUrl?: string | null;
+  /** @nullable */
+  contactInfo?: string | null;
+  /** @nullable */
+  address?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  website?: string | null;
+  /** @nullable */
+  welcomeMessage?: string | null;
+  updatedAt: string;
+}
+
+export interface SchoolBrandingUpdate {
+  schoolName?: string;
+  /** @nullable */
+  motto?: string | null;
+  /** @nullable */
+  logoUrl?: string | null;
+  /** @nullable */
+  contactInfo?: string | null;
+  /** @nullable */
+  address?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  website?: string | null;
+  /** @nullable */
+  welcomeMessage?: string | null;
+}
+
+export interface Club {
+  id: number;
+  name: string;
+  /** @nullable */
+  logoUrl?: string | null;
+  /** @nullable */
+  patron?: string | null;
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  userId?: number | null;
+  createdAt: string;
+}
+
+export interface ClubInput {
+  name: string;
+  /** @nullable */
+  logoUrl?: string | null;
+  /** @nullable */
+  patron?: string | null;
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  username?: string | null;
+  /** @nullable */
+  password?: string | null;
+}
+
+export interface ClubUpdate {
+  name?: string;
+  /** @nullable */
+  logoUrl?: string | null;
+  /** @nullable */
+  patron?: string | null;
+  /** @nullable */
+  description?: string | null;
 }
 
 export type SuggestionCategory = typeof SuggestionCategory[keyof typeof SuggestionCategory];

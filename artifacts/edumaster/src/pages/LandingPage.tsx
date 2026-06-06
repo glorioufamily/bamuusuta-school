@@ -1,46 +1,63 @@
-import { useListAnnouncements, useGetStudentRankings, useGetClassRankings } from "@workspace/api-client-react";
+import { useListAnnouncements, useGetStudentRankings, useGetClassRankings, useListClubs } from "@workspace/api-client-react";
+import { useBranding } from "@/context/BrandingContext";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Calendar, BookOpen, Users, Star, ArrowRight, ShieldCheck, MapPin, Bell } from "lucide-react";
-import { format } from "date-fns";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Trophy, Calendar, BookOpen, Users, Star, ArrowRight, ShieldCheck, MapPin, Bell, Globe, Mail, Phone, ExternalLink, FileText, Video, Image } from "lucide-react";
+import { format, isToday, isYesterday } from "date-fns";
+
+function getDateLabel(dateStr: string) {
+  const date = new Date(dateStr);
+  if (isToday(date)) return "Today";
+  if (isYesterday(date)) return "Yesterday";
+  return format(date, "MMMM dd, yyyy");
+}
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } },
+};
 
 export function LandingPage() {
+  const { branding } = useBranding();
   const { data: announcements, isLoading: loadingAnnouncements } = useListAnnouncements({ params: { visibility: "public" } });
   const { data: topStudents, isLoading: loadingStudents } = useGetStudentRankings({ params: { limit: 5 } });
   const { data: classRankings, isLoading: loadingClasses } = useGetClassRankings();
+  const { data: clubs } = useListClubs();
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
+  const schoolName = branding?.schoolName ?? "Greenfield Academy";
+  const motto = branding?.motto ?? "Nurturing Tomorrow's Leaders Today";
+  const logoUrl = branding?.logoUrl;
+  const welcomeMessage = branding?.welcomeMessage ?? `${schoolName} is a premier educational institution committed to academic excellence, character development, and holistic growth.`;
+  const address = branding?.address ?? "123 Education Way, Cityville, District 4";
+  const email = branding?.email ?? "info@school.edu";
+  const contactInfo = branding?.contactInfo ?? "+1 234 567 890";
+  const website = branding?.website;
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: "spring", stiffness: 100 },
-    },
-  };
+  const initials = schoolName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
     <div className="min-h-screen bg-background flex flex-col font-sans">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 md:px-6 flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground font-bold">
-              GA
-            </div>
-            <span className="text-xl font-bold tracking-tight text-foreground hidden sm:inline-block">Greenfield Academy</span>
+          <div className="flex items-center gap-3">
+            {logoUrl ? (
+              <img src={logoUrl} alt="School Logo" className="h-9 w-9 rounded object-contain border border-border/30" />
+            ) : (
+              <div className="flex h-9 w-9 items-center justify-center rounded bg-primary text-primary-foreground font-bold text-sm">
+                {initials}
+              </div>
+            )}
+            <span className="text-xl font-bold tracking-tight text-foreground hidden sm:inline-block">{schoolName}</span>
           </div>
           <nav className="flex items-center gap-4">
             <Link href="/login">
@@ -56,21 +73,29 @@ export function LandingPage() {
           <div className="absolute inset-0 z-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070')] bg-cover bg-center" />
           <div className="absolute inset-0 bg-gradient-to-t from-primary to-primary/60 z-0" />
           <div className="container mx-auto px-4 md:px-6 relative z-10">
-            <motion.div 
+            <motion.div
               className="flex flex-col items-center text-center space-y-8 max-w-3xl mx-auto"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
+              {logoUrl && (
+                <div className="w-24 h-24 rounded-2xl bg-white/90 p-2 shadow-xl flex items-center justify-center">
+                  <img src={logoUrl} alt="School Logo" className="w-full h-full object-contain" />
+                </div>
+              )}
               <div className="inline-flex items-center rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-3 py-1 text-sm font-medium backdrop-blur">
                 <Star className="mr-2 h-4 w-4 fill-accent text-accent" />
                 Excellence in Education
               </div>
               <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-                Nurturing Tomorrow's Leaders Today
+                {schoolName}
               </h1>
+              {motto && (
+                <p className="text-xl italic text-primary-foreground/80 font-medium">"{motto}"</p>
+              )}
               <p className="max-w-[42rem] leading-normal text-primary-foreground/80 sm:text-xl sm:leading-8">
-                Greenfield Academy is a premier educational institution committed to academic excellence, character development, and holistic growth.
+                {welcomeMessage}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                 <Button size="lg" variant="secondary" className="w-full sm:w-auto text-primary font-bold">
@@ -91,15 +116,13 @@ export function LandingPage() {
               <h2 className="text-3xl font-bold tracking-tight text-foreground">Latest Announcements</h2>
               <Button variant="ghost" className="hidden sm:flex">View all <ArrowRight className="ml-2 h-4 w-4" /></Button>
             </div>
-            
+
             {loadingAnnouncements ? (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {[1, 2, 3].map(i => (
-                  <Card key={i} className="h-48 animate-pulse bg-muted" />
-                ))}
+                {[1, 2, 3].map(i => <Card key={i} className="h-48 animate-pulse bg-muted" />)}
               </div>
             ) : announcements && announcements.length > 0 ? (
-              <motion.div 
+              <motion.div
                 className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
                 variants={containerVariants}
                 initial="hidden"
@@ -108,24 +131,50 @@ export function LandingPage() {
               >
                 {announcements.map((announcement) => (
                   <motion.div key={announcement.id} variants={itemVariants}>
-                    <Card className="h-full flex flex-col hover-elevate">
+                    <Card className="h-full flex flex-col hover:shadow-md transition-shadow">
+                      {announcement.imageUrl && (
+                        <div className="h-40 overflow-hidden rounded-t-xl">
+                          <img src={announcement.imageUrl} alt={announcement.title} className="w-full h-full object-cover" />
+                        </div>
+                      )}
                       <CardHeader className="pb-3">
-                        <div className="flex justify-between items-start mb-2">
-                          <Badge variant="secondary" className="capitalize text-primary bg-primary/10">
-                            {announcement.category}
-                          </Badge>
-                          {announcement.pinned && (
-                            <Badge variant="default" className="bg-accent text-accent-foreground">Pinned</Badge>
+                        <div className="flex items-center gap-2 mb-2">
+                          {announcement.authorLogoUrl ? (
+                            <img src={announcement.authorLogoUrl} alt={announcement.authorName ?? ""} className="h-6 w-6 rounded-full object-contain border border-border/30" />
+                          ) : (
+                            <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
+                              {(announcement.authorName ?? "?").charAt(0)}
+                            </div>
+                          )}
+                          <span className="text-xs text-muted-foreground font-medium">{announcement.authorName}</span>
+                          {announcement.authorRole && (
+                            <Badge variant="outline" className="text-xs capitalize py-0">{announcement.authorRole}</Badge>
                           )}
                         </div>
-                        <CardTitle className="text-xl line-clamp-2">{announcement.title}</CardTitle>
+                        <div className="flex justify-between items-start">
+                          <Badge variant="secondary" className="capitalize text-primary bg-primary/10">{announcement.category}</Badge>
+                          {announcement.pinned && <Badge className="bg-accent text-accent-foreground">Pinned</Badge>}
+                        </div>
+                        <CardTitle className="text-xl line-clamp-2 mt-2">{announcement.title}</CardTitle>
                         <CardDescription className="flex items-center gap-1 mt-1 text-xs">
                           <Calendar className="h-3 w-3" />
-                          {format(new Date(announcement.createdAt), 'MMM dd, yyyy')}
+                          {getDateLabel(announcement.createdAt)}
+                          {announcement.eventDate && (
+                            <span className="ml-2 text-primary font-medium">Event: {format(new Date(announcement.eventDate), "MMM dd")}</span>
+                          )}
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="flex-1">
                         <p className="text-muted-foreground line-clamp-3 text-sm">{announcement.content}</p>
+                        <div className="flex gap-1 mt-2 flex-wrap">
+                          {announcement.videoUrl && <Badge variant="outline" className="text-xs"><Video className="h-3 w-3 mr-1" />Video</Badge>}
+                          {announcement.documentUrl && <Badge variant="outline" className="text-xs"><FileText className="h-3 w-3 mr-1" />Doc</Badge>}
+                          {announcement.externalLink && (
+                            <a href={announcement.externalLink} target="_blank" rel="noopener noreferrer">
+                              <Badge variant="outline" className="text-xs cursor-pointer hover:bg-primary/10"><ExternalLink className="h-3 w-3 mr-1" />Link</Badge>
+                            </a>
+                          )}
+                        </div>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -140,32 +189,61 @@ export function LandingPage() {
             )}
           </section>
 
+          {/* Clubs & Societies */}
+          {clubs && clubs.length > 0 && (
+            <section>
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold tracking-tight text-foreground">Clubs & Societies</h2>
+                <p className="text-muted-foreground mt-1">Explore our vibrant co-curricular activities.</p>
+              </div>
+              <motion.div
+                className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+              >
+                {clubs.map((club) => (
+                  <motion.div key={club.id} variants={itemVariants}>
+                    <Card className="text-center p-5 hover:shadow-md transition-shadow h-full flex flex-col items-center">
+                      <Avatar className="h-16 w-16 rounded-xl mb-3 border border-border/30">
+                        <AvatarImage src={club.logoUrl ?? undefined} className="object-contain" />
+                        <AvatarFallback className="rounded-xl bg-primary/10 text-primary font-bold text-xl">
+                          {club.name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <h3 className="font-bold text-foreground text-sm leading-tight">{club.name}</h3>
+                      {club.patron && <p className="text-xs text-muted-foreground mt-1">Patron: {club.patron}</p>}
+                      {club.description && (
+                        <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{club.description}</p>
+                      )}
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </section>
+          )}
+
           {/* Excellence Board */}
           <section className="bg-secondary/30 -mx-4 md:-mx-6 px-4 md:px-6 py-12 md:py-20 rounded-3xl">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tight text-foreground">Wall of Excellence</h2>
-              <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">Celebrating outstanding academic achievements across Greenfield Academy.</p>
+              <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">Celebrating outstanding academic achievements across {schoolName}.</p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-              {/* Top Students */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
               >
                 <div className="flex items-center gap-2 mb-6">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                    <Trophy className="h-6 w-6" />
-                  </div>
+                  <div className="p-2 bg-primary/10 rounded-lg text-primary"><Trophy className="h-6 w-6" /></div>
                   <h3 className="text-2xl font-bold text-foreground">Top Scholars</h3>
                 </div>
-                
                 {loadingStudents ? (
-                  <div className="space-y-4">
-                    {[1, 2, 3, 4, 5].map(i => <div key={i} className="h-16 bg-muted animate-pulse rounded-lg" />)}
-                  </div>
+                  <div className="space-y-4">{[1, 2, 3, 4, 5].map(i => <div key={i} className="h-16 bg-muted animate-pulse rounded-lg" />)}</div>
                 ) : (
                   <div className="space-y-4">
                     {topStudents?.map((student, index) => (
@@ -176,9 +254,7 @@ export function LandingPage() {
                             index === 1 ? 'bg-slate-200 text-slate-700' :
                             index === 2 ? 'bg-orange-100 text-orange-800' :
                             'bg-primary/5 text-primary'
-                          }`}>
-                            {index + 1}
-                          </div>
+                          }`}>{index + 1}</div>
                           <div>
                             <p className="font-semibold text-foreground">{student.name}</p>
                             <p className="text-xs text-muted-foreground">{student.className}</p>
@@ -194,24 +270,18 @@ export function LandingPage() {
                 )}
               </motion.div>
 
-              {/* Top Classes */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
               >
                 <div className="flex items-center gap-2 mb-6">
-                  <div className="p-2 bg-accent/20 rounded-lg text-accent-foreground">
-                    <Users className="h-6 w-6" />
-                  </div>
+                  <div className="p-2 bg-accent/20 rounded-lg text-accent-foreground"><Users className="h-6 w-6" /></div>
                   <h3 className="text-2xl font-bold text-foreground">Leading Classes</h3>
                 </div>
-                
                 {loadingClasses ? (
-                  <div className="space-y-4">
-                    {[1, 2, 3].map(i => <div key={i} className="h-24 bg-muted animate-pulse rounded-lg" />)}
-                  </div>
+                  <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-24 bg-muted animate-pulse rounded-lg" />)}</div>
                 ) : (
                   <div className="space-y-4">
                     {classRankings?.slice(0, 3).map((cls, index) => (
@@ -224,18 +294,9 @@ export function LandingPage() {
                           <Badge variant="outline" className="bg-primary/5">Rank #{cls.rank}</Badge>
                         </div>
                         <div className="grid grid-cols-3 gap-4 mt-4">
-                          <div>
-                            <p className="text-xs text-muted-foreground">Avg Score</p>
-                            <p className="font-bold text-foreground">{cls.averageScore}%</p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-muted-foreground">Attendance</p>
-                            <p className="font-bold text-foreground">{cls.attendanceRate}%</p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-muted-foreground">Students</p>
-                            <p className="font-bold text-foreground">{cls.studentCount}</p>
-                          </div>
+                          <div><p className="text-xs text-muted-foreground">Avg Score</p><p className="font-bold text-foreground">{cls.averageScore}%</p></div>
+                          <div><p className="text-xs text-muted-foreground">Attendance</p><p className="font-bold text-foreground">{cls.attendanceRate}%</p></div>
+                          <div><p className="text-xs text-muted-foreground">Students</p><p className="font-bold text-foreground">{cls.studentCount}</p></div>
                         </div>
                       </div>
                     ))}
@@ -245,34 +306,26 @@ export function LandingPage() {
             </div>
           </section>
 
-          {/* Features / Stats */}
+          {/* Features */}
           <section className="py-10">
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               <div className="flex flex-col items-center text-center p-6 space-y-4">
-                <div className="p-4 bg-primary/10 text-primary rounded-full">
-                  <BookOpen className="h-8 w-8" />
-                </div>
+                <div className="p-4 bg-primary/10 text-primary rounded-full"><BookOpen className="h-8 w-8" /></div>
                 <h3 className="text-xl font-bold text-foreground">Rigorous Curriculum</h3>
                 <p className="text-muted-foreground text-sm">Comprehensive syllabus designed to challenge and inspire students.</p>
               </div>
               <div className="flex flex-col items-center text-center p-6 space-y-4">
-                <div className="p-4 bg-accent/20 text-accent-foreground rounded-full">
-                  <ShieldCheck className="h-8 w-8" />
-                </div>
+                <div className="p-4 bg-accent/20 text-accent-foreground rounded-full"><ShieldCheck className="h-8 w-8" /></div>
                 <h3 className="text-xl font-bold text-foreground">Discipline & Values</h3>
                 <p className="text-muted-foreground text-sm">Fostering strong moral character and ethical leadership.</p>
               </div>
               <div className="flex flex-col items-center text-center p-6 space-y-4">
-                <div className="p-4 bg-chart-3/10 text-chart-3 rounded-full">
-                  <Trophy className="h-8 w-8" />
-                </div>
+                <div className="p-4 bg-chart-3/10 text-chart-3 rounded-full"><Trophy className="h-8 w-8" /></div>
                 <h3 className="text-xl font-bold text-foreground">Extra-Curricular</h3>
                 <p className="text-muted-foreground text-sm">Rich sports and arts programs for holistic development.</p>
               </div>
               <div className="flex flex-col items-center text-center p-6 space-y-4">
-                <div className="p-4 bg-chart-5/10 text-chart-5 rounded-full">
-                  <MapPin className="h-8 w-8" />
-                </div>
+                <div className="p-4 bg-chart-5/10 text-chart-5 rounded-full"><MapPin className="h-8 w-8" /></div>
                 <h3 className="text-xl font-bold text-foreground">Modern Campus</h3>
                 <p className="text-muted-foreground text-sm">State-of-the-art facilities located in a serene environment.</p>
               </div>
@@ -284,23 +337,24 @@ export function LandingPage() {
       <footer className="bg-secondary text-secondary-foreground py-12 mt-auto">
         <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground font-bold">
-                GA
-              </div>
-              <span className="text-xl font-bold tracking-tight">Greenfield Academy</span>
+            <div className="flex items-center gap-3 mb-4">
+              {logoUrl ? (
+                <img src={logoUrl} alt="Logo" className="h-9 w-9 rounded object-contain bg-white/90 p-0.5" />
+              ) : (
+                <div className="flex h-9 w-9 items-center justify-center rounded bg-primary text-primary-foreground font-bold">{initials}</div>
+              )}
+              <span className="text-xl font-bold tracking-tight">{schoolName}</span>
             </div>
-            <p className="text-secondary-foreground/70 text-sm max-w-xs">
-              Empowering the next generation with knowledge, skills, and character to lead and succeed.
-            </p>
+            {motto && <p className="text-secondary-foreground/70 text-sm italic mb-2">"{motto}"</p>}
+            <p className="text-secondary-foreground/70 text-sm max-w-xs">Empowering the next generation with knowledge, skills, and character to lead and succeed.</p>
           </div>
           <div>
             <h4 className="font-bold mb-4 text-lg">Contact</h4>
             <ul className="space-y-2 text-sm text-secondary-foreground/70">
-              <li>123 Education Way</li>
-              <li>Cityville, District 4</li>
-              <li>info@greenfieldacademy.edu</li>
-              <li>+1 234 567 890</li>
+              {address && <li className="flex items-start gap-2"><MapPin className="h-3 w-3 mt-0.5 shrink-0" />{address}</li>}
+              {email && <li className="flex items-center gap-2"><Mail className="h-3 w-3 shrink-0" />{email}</li>}
+              {contactInfo && <li className="flex items-center gap-2"><Phone className="h-3 w-3 shrink-0" />{contactInfo}</li>}
+              {website && <li className="flex items-center gap-2"><Globe className="h-3 w-3 shrink-0" /><a href={website} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">{website}</a></li>}
             </ul>
           </div>
           <div>
@@ -312,7 +366,7 @@ export function LandingPage() {
           </div>
         </div>
         <div className="container mx-auto px-4 md:px-6 mt-12 pt-8 border-t border-secondary-foreground/10 text-center text-sm text-secondary-foreground/50">
-          &copy; {new Date().getFullYear()} Greenfield Academy. All rights reserved.
+          &copy; {new Date().getFullYear()} {schoolName}. All rights reserved.
         </div>
       </footer>
     </div>

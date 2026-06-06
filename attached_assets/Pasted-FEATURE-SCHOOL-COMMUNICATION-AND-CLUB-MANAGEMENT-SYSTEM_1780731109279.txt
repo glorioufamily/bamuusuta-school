@@ -1,0 +1,311 @@
+FEATURE: SCHOOL COMMUNICATION AND CLUB MANAGEMENT SYSTEM
+
+CRITICAL RULE:
+
+Do not rebuild the project.
+
+Do not redesign existing modules.
+
+Only extend the current system.
+
+Reuse existing user, authentication, media, and announcement structures whenever possible.
+
+==================================================
+
+1. SCHOOL BRANDING SYSTEM
+   ==================================================
+
+Admin should manage school branding.
+
+Admin can upload:
+
+* School logo
+* School name
+* School motto
+* School contact information
+* School address
+* School email
+* School website
+
+Requirements:
+
+* School logo appears in the header of every page.
+* School name appears beside the logo.
+* Branding updates automatically across the entire system.
+* Store branding settings in the database.
+
+Landing Page:
+
+The landing page should prominently display:
+
+* Large school logo
+* Large school name
+* School motto
+* Welcome message
+
+This should create a strong first impression for visitors.
+
+==================================================
+2. CLUB AND SOCIETY ACCOUNTS
+============================
+
+Admin can create official club accounts.
+
+Examples:
+
+* Debate Club
+* Science Club
+* ICT Club
+* Football Club
+* Netball Club
+* Scouts
+* Wildlife Club
+* Scripture Union
+* Red Cross
+* Music Dance and Drama
+
+Admin defines:
+
+* Club name
+* Club logo
+* Patron/Teacher
+* Club description
+
+Club accounts should have their own login.
+
+==================================================
+3. CLUB DASHBOARD
+=================
+
+Club accounts can:
+
+* Create announcements
+* Upload images
+* Upload videos
+* Upload documents
+* Post club activities
+* Publish event notices
+
+Club accounts cannot:
+
+* View student records
+* View staff records
+* Edit school administration data
+* Access finance modules
+
+==================================================
+4. ADVANCED ANNOUNCEMENT SYSTEM
+===============================
+
+Announcement creators:
+
+* Admin
+* Headteacher
+* Director of Studies
+* Authorized Club Accounts
+
+Announcements can contain:
+
+* Title
+* Description
+* Images
+* Videos
+* Documents
+* External links
+* Event dates
+
+Files supported:
+
+Images:
+
+* JPG
+* PNG
+* WEBP
+
+Videos:
+
+* MP4
+* WEBM
+
+Documents:
+
+* PDF
+* DOCX
+* XLSX
+
+==================================================
+5. ANNOUNCEMENT CARD DESIGN
+===========================
+
+Every announcement must display:
+
+* Uploader photo/logo
+* Uploader name
+* Uploader role
+* Upload date
+* Title
+* Description preview
+
+When clicked:
+
+Open full announcement page.
+
+==================================================
+6. ANNOUNCEMENT ORDERING
+========================
+
+Announcements should be sorted automatically.
+
+Newest announcements appear first.
+
+Order by:
+
+Upload Date DESC
+
+Display:
+
+* Today
+* Yesterday
+* Earlier dates
+
+==================================================
+7. LANDING PAGE COMMUNICATION CENTER
+====================================
+
+The landing page becomes the school's public communication center.
+
+Sections:
+
+A. School Branding Header
+
+* Large logo
+* School name
+* Motto
+
+B. Latest Announcements
+
+* News feed
+* Events
+* Notices
+
+C. Clubs and Societies
+
+* Club logos
+* Club descriptions
+* Recent activities
+
+D. Academic Notices
+
+* Examination information
+* DOS updates
+
+E. School Achievements
+
+* Awards
+* Competitions
+* Top performers
+
+==================================================
+8. MEDIA GALLERY
+================
+
+Create a school gallery.
+
+Display:
+
+* Event photos
+* Sports photos
+* Club photos
+* Academic activities
+
+Allow filtering by:
+
+* Club
+* Event
+* Date
+
+==================================================
+9. DOCUMENT CENTER
+==================
+
+Create a document repository.
+
+Examples:
+
+* Circulars
+* School rules
+* Exam timetables
+* Holiday notices
+* Club documents
+
+Access should be controlled by permissions.
+
+==================================================
+10. NOTIFICATION INTEGRATION
+============================
+
+When a new announcement is posted:
+
+Notify:
+
+* Students
+* Parents
+* Teachers
+* Staff
+
+according to permissions.
+
+==================================================
+11. DATABASE RULES
+==================
+
+Reuse existing announcement structures.
+
+Create new collections only when necessary.
+
+Store:
+
+* Creator information
+* Media references
+* Upload date
+* Visibility settings
+
+==================================================
+12. IMPLEMENTATION PROCESS
+==========================
+
+Phase 1:
+Analyze current announcement system.
+
+Phase 2:
+Identify files to modify.
+
+Phase 3:
+Add School Branding System.
+
+Phase 4:
+Add Club Accounts.
+
+Phase 5:
+Add Media Upload Support.
+
+Phase 6:
+Add Landing Page Communication Center.
+
+Phase 7:
+Test compatibility with existing features.
+
+After implementation:
+
+Provide:
+
+* Files modified
+* Database changes
+* API changes
+* New permissions added
+
+IMPORTANT:
+
+This is an extension to the existing project.
+
+Do not rebuild the project.

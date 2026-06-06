@@ -35,6 +35,10 @@ tags:
     description: Notification system
   - name: rankings
     description: Student rankings
+  - name: branding
+    description: School branding settings
+  - name: clubs
+    description: Club and society accounts
 
 paths:
   /healthz:
@@ -645,6 +649,112 @@ paths:
               schema:
                 $ref: "#/components/schemas/DisciplineRecord"
 
+  # ─── BRANDING ───────────────────────────────────────────────────────────
+  /branding:
+    get:
+      operationId: getSchoolBranding
+      tags: [branding]
+      summary: Get school branding settings
+      responses:
+        "200":
+          description: School branding
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SchoolBranding"
+    patch:
+      operationId: updateSchoolBranding
+      tags: [branding]
+      summary: Update school branding (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SchoolBrandingUpdate"
+      responses:
+        "200":
+          description: Updated branding
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SchoolBranding"
+
+  # ─── CLUBS ──────────────────────────────────────────────────────────────
+  /clubs:
+    get:
+      operationId: listClubs
+      tags: [clubs]
+      summary: List all clubs
+      responses:
+        "200":
+          description: Clubs list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Club"
+    post:
+      operationId: createClub
+      tags: [clubs]
+      summary: Create a club (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClubInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Club"
+
+  /clubs/{id}:
+    patch:
+      operationId: updateClub
+      tags: [clubs]
+      summary: Update a club (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClubUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Club"
+    delete:
+      operationId: deleteClub
+      tags: [clubs]
+      summary: Delete a club (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
   # ─── ANNOUNCEMENTS ─────────────────────────────────────────────────────
   /announcements:
     get:
@@ -1013,7 +1123,7 @@ components:
           type: string
         role:
           type: string
-          enum: [admin, headteacher, dos, teacher, bursar, student, parent]
+          enum: [admin, headteacher, dos, teacher, bursar, student, parent, club]
         avatarUrl:
           type: ["string", "null"]
         linkedId:
@@ -1502,6 +1612,10 @@ components:
           type: integer
         authorName:
           type: ["string", "null"]
+        authorRole:
+          type: ["string", "null"]
+        authorLogoUrl:
+          type: ["string", "null"]
         visibility:
           type: string
           enum: [public, staff, students, parents]
@@ -1510,6 +1624,16 @@ components:
           enum: [general, event, achievement, alert, academic]
         imageUrl:
           type: ["string", "null"]
+        videoUrl:
+          type: ["string", "null"]
+        documentUrl:
+          type: ["string", "null"]
+        externalLink:
+          type: ["string", "null"]
+        eventDate:
+          type: ["string", "null"]
+        clubId:
+          type: ["integer", "null"]
         pinned:
           type: boolean
         createdAt:
@@ -1531,6 +1655,14 @@ components:
           enum: [general, event, achievement, alert, academic]
         imageUrl:
           type: ["string", "null"]
+        videoUrl:
+          type: ["string", "null"]
+        documentUrl:
+          type: ["string", "null"]
+        externalLink:
+          type: ["string", "null"]
+        eventDate:
+          type: ["string", "null"]
         pinned:
           type: boolean
       required: [title, content, visibility, category]
@@ -1548,8 +1680,113 @@ components:
         category:
           type: string
           enum: [general, event, achievement, alert, academic]
+        imageUrl:
+          type: ["string", "null"]
+        videoUrl:
+          type: ["string", "null"]
+        documentUrl:
+          type: ["string", "null"]
+        externalLink:
+          type: ["string", "null"]
+        eventDate:
+          type: ["string", "null"]
         pinned:
           type: boolean
+
+    # ─── BRANDING ─────────────────────────────────────────────────────
+    SchoolBranding:
+      type: object
+      properties:
+        id:
+          type: integer
+        schoolName:
+          type: string
+        motto:
+          type: ["string", "null"]
+        logoUrl:
+          type: ["string", "null"]
+        contactInfo:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        welcomeMessage:
+          type: ["string", "null"]
+        updatedAt:
+          type: string
+      required: [id, schoolName, updatedAt]
+
+    SchoolBrandingUpdate:
+      type: object
+      properties:
+        schoolName:
+          type: string
+        motto:
+          type: ["string", "null"]
+        logoUrl:
+          type: ["string", "null"]
+        contactInfo:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        welcomeMessage:
+          type: ["string", "null"]
+
+    # ─── CLUBS ────────────────────────────────────────────────────────
+    Club:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        patron:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        userId:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+      required: [id, name, createdAt]
+
+    ClubInput:
+      type: object
+      properties:
+        name:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        patron:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        username:
+          type: ["string", "null"]
+        password:
+          type: ["string", "null"]
+      required: [name]
+
+    ClubUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        patron:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
 
     # ─── SUGGESTIONS ─────────────────────────────────────────────────
     Suggestion:

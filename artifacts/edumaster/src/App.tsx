@@ -4,8 +4,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { queryClient } from "./lib/queryClient";
 import { AuthProvider } from "./context/AuthContext";
+import { BrandingProvider } from "./context/BrandingContext";
 import { initApiClient } from "./lib/apiClient";
 import NotFound from "@/pages/not-found";
+import { ReactNode } from "react";
 
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -28,95 +30,82 @@ import { AnalyticsPage } from "@/pages/AnalyticsPage";
 import { RankingsPage } from "@/pages/RankingsPage";
 import { HeadteacherIntelligencePage } from "@/pages/HeadteacherIntelligencePage";
 import { ClassInvestigationPage } from "@/pages/ClassInvestigationPage";
+import { SchoolBrandingPage } from "@/pages/SchoolBrandingPage";
+import { ClubsManagementPage } from "@/pages/ClubsManagementPage";
+import { ClubDashboardPage } from "@/pages/ClubDashboardPage";
 
-// Initialize the API client so it can inject the auth token
 initApiClient();
+
+function ProtectedLayout({ children }: { children: ReactNode }) {
+  return (
+    <ProtectedRoute>
+      <AppLayout>{children}</AppLayout>
+    </ProtectedRoute>
+  );
+}
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
       <Route path="/login" component={LoginPage} />
-      
+
       <Route path="/dashboard">
-        <ProtectedRoute>
-          <DashboardPage />
-        </ProtectedRoute>
+        <ProtectedLayout><DashboardPage /></ProtectedLayout>
+      </Route>
+      <Route path="/club-dashboard">
+        <ProtectedLayout><ClubDashboardPage /></ProtectedLayout>
+      </Route>
+      <Route path="/branding">
+        <ProtectedLayout><SchoolBrandingPage /></ProtectedLayout>
+      </Route>
+      <Route path="/clubs">
+        <ProtectedLayout><ClubsManagementPage /></ProtectedLayout>
       </Route>
       <Route path="/students">
-        <ProtectedRoute>
-          <StudentsPage />
-        </ProtectedRoute>
+        <ProtectedLayout><StudentsPage /></ProtectedLayout>
       </Route>
       <Route path="/students/:id">
-        <ProtectedRoute>
-          <StudentProfilePage />
-        </ProtectedRoute>
+        <ProtectedLayout><StudentProfilePage /></ProtectedLayout>
       </Route>
       <Route path="/teachers">
-        <ProtectedRoute>
-          <TeachersPage />
-        </ProtectedRoute>
+        <ProtectedLayout><TeachersPage /></ProtectedLayout>
       </Route>
       <Route path="/teachers/:id">
-        <ProtectedRoute>
-          <TeacherDetailPage />
-        </ProtectedRoute>
+        <ProtectedLayout><TeacherDetailPage /></ProtectedLayout>
       </Route>
       <Route path="/classes">
-        <ProtectedRoute>
-          <ClassesPage />
-        </ProtectedRoute>
+        <ProtectedLayout><ClassesPage /></ProtectedLayout>
       </Route>
       <Route path="/marks">
-        <ProtectedRoute>
-          <MarksPage />
-        </ProtectedRoute>
+        <ProtectedLayout><MarksPage /></ProtectedLayout>
       </Route>
       <Route path="/attendance">
-        <ProtectedRoute>
-          <AttendancePage />
-        </ProtectedRoute>
+        <ProtectedLayout><AttendancePage /></ProtectedLayout>
       </Route>
       <Route path="/fees">
-        <ProtectedRoute>
-          <FeesPage />
-        </ProtectedRoute>
+        <ProtectedLayout><FeesPage /></ProtectedLayout>
       </Route>
       <Route path="/discipline">
-        <ProtectedRoute>
-          <DisciplinePage />
-        </ProtectedRoute>
+        <ProtectedLayout><DisciplinePage /></ProtectedLayout>
       </Route>
       <Route path="/announcements">
-        <ProtectedRoute>
-          <AnnouncementsPage />
-        </ProtectedRoute>
+        <ProtectedLayout><AnnouncementsPage /></ProtectedLayout>
       </Route>
       <Route path="/suggestions">
-        <ProtectedRoute>
-          <SuggestionsPage />
-        </ProtectedRoute>
+        <ProtectedLayout><SuggestionsPage /></ProtectedLayout>
       </Route>
       <Route path="/analytics">
-        <ProtectedRoute>
-          <AnalyticsPage />
-        </ProtectedRoute>
+        <ProtectedLayout><AnalyticsPage /></ProtectedLayout>
       </Route>
       <Route path="/rankings">
-        <ProtectedRoute>
-          <RankingsPage />
-        </ProtectedRoute>
+        <ProtectedLayout><RankingsPage /></ProtectedLayout>
       </Route>
       <Route path="/intelligence">
-        <ProtectedRoute>
-          <HeadteacherIntelligencePage />
-        </ProtectedRoute>
+        <ProtectedLayout><HeadteacherIntelligencePage /></ProtectedLayout>
       </Route>
       <Route path="/intelligence/class/:id">
-        <ProtectedRoute>
-          <ClassInvestigationPage />
-        </ProtectedRoute>
+        <ProtectedLayout><ClassInvestigationPage /></ProtectedLayout>
       </Route>
       <Route component={NotFound} />
     </Switch>
@@ -127,12 +116,14 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <Router />
-          </WouterRouter>
-          <Toaster position="top-right" richColors />
-        </TooltipProvider>
+        <BrandingProvider>
+          <TooltipProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <Router />
+            </WouterRouter>
+            <Toaster position="top-right" richColors />
+          </TooltipProvider>
+        </BrandingProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

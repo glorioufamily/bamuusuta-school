@@ -17,4 +17,5 @@ export const UserRole = {
   bursar: 'bursar',
   student: 'student',
   parent: 'parent',
+  club: 'club',
 } as const;

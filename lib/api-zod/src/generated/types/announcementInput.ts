@@ -15,5 +15,13 @@ export interface AnnouncementInput {
   category: AnnouncementInputCategory;
   /** @nullable */
   imageUrl?: string | null;
+  /** @nullable */
+  videoUrl?: string | null;
+  /** @nullable */
+  documentUrl?: string | null;
+  /** @nullable */
+  externalLink?: string | null;
+  /** @nullable */
+  eventDate?: string | null;
   pinned?: boolean;
 }

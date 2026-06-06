@@ -1,2 +1,3 @@
 - [EduMaster Auth Seeding](edumaster-auth-seeding.md) — passwords must be seeded via server-side script (uses SESSION_SECRET); never hash from sandbox
 - [API Client Subpath Exports](api-client-subpath.md) — @workspace/api-client-react needs "./custom-fetch" export in package.json for setAuthTokenGetter access
+- [EduMaster Club & Branding Extension](edumaster-club-branding.md) — clubs use role="club" in usersTable + linkedId→clubsTable; branding uses single-row upsert; App.tsx uses ProtectedLayout wrapper

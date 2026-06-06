@@ -9,3 +9,5 @@ export * from "./discipline";
 export * from "./announcements";
 export * from "./suggestions";
 export * from "./notifications";
+export * from "./branding";
+export * from "./clubs";

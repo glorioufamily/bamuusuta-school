@@ -10,6 +10,11 @@ export const announcementsTable = pgTable("announcements", {
   visibility: text("visibility").notNull().default("public"), // public, staff, students, parents
   category: text("category").notNull().default("general"), // general, event, achievement, alert, academic
   imageUrl: text("image_url"),
+  videoUrl: text("video_url"),
+  documentUrl: text("document_url"),
+  externalLink: text("external_link"),
+  eventDate: text("event_date"),
+  clubId: integer("club_id"),
   pinned: boolean("pinned").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

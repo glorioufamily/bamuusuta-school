@@ -15,10 +15,24 @@ export interface Announcement {
   authorId: number;
   /** @nullable */
   authorName?: string | null;
+  /** @nullable */
+  authorRole?: string | null;
+  /** @nullable */
+  authorLogoUrl?: string | null;
   visibility: AnnouncementVisibility;
   category: AnnouncementCategory;
   /** @nullable */
   imageUrl?: string | null;
+  /** @nullable */
+  videoUrl?: string | null;
+  /** @nullable */
+  documentUrl?: string | null;
+  /** @nullable */
+  externalLink?: string | null;
+  /** @nullable */
+  eventDate?: string | null;
+  /** @nullable */
+  clubId?: number | null;
   pinned: boolean;
   createdAt: string;
 }

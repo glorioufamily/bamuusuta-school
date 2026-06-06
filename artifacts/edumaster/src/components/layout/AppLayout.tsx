@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
+import { useBranding } from "@/context/BrandingContext";
 import { Link, useLocation } from "wouter";
 import {
   Sidebar,
@@ -29,7 +30,9 @@ import {
   BarChart, 
   Trophy,
   LogOut,
-  Eye
+  Eye,
+  Palette,
+  Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -38,14 +41,28 @@ function getNavItems(role: string | null) {
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, roles: ["admin", "headteacher", "dos", "teacher", "bursar", "student", "parent"] },
   ];
 
+  if (role === "club") {
+    return [
+      { title: "Club Dashboard", url: "/club-dashboard", icon: Shield, roles: ["club"] },
+    ];
+  }
+
   if (role === "admin" || role === "headteacher") {
     items.push(
       { title: "Students", url: "/students", icon: Users, roles: ["admin", "headteacher"] },
       { title: "Teachers", url: "/teachers", icon: BookOpen, roles: ["admin", "headteacher"] },
       { title: "Classes", url: "/classes", icon: GraduationCap, roles: ["admin", "headteacher"] },
+      { title: "Announcements", url: "/announcements", icon: Bell, roles: ["admin", "headteacher"] },
       { title: "Analytics", url: "/analytics", icon: BarChart, roles: ["admin", "headteacher"] },
       { title: "Rankings", url: "/rankings", icon: Trophy, roles: ["admin", "headteacher"] },
       { title: "Suggestions", url: "/suggestions", icon: MessageSquare, roles: ["admin", "headteacher"] },
+    );
+  }
+
+  if (role === "admin") {
+    items.push(
+      { title: "Clubs & Societies", url: "/clubs", icon: Users, roles: ["admin"] },
+      { title: "School Branding", url: "/branding", icon: Palette, roles: ["admin"] },
     );
   }
 
@@ -85,19 +102,28 @@ function getNavItems(role: string | null) {
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const { user, role, logout } = useAuth();
+  const { branding } = useBranding();
   const [location] = useLocation();
   const navItems = getNavItems(role);
+
+  const schoolName = branding?.schoolName ?? "EduMaster 360";
+  const logoUrl = branding?.logoUrl;
+  const initials = schoolName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-muted/30">
         <Sidebar className="border-r bg-sidebar">
           <SidebarHeader className="border-b border-border/10 p-4">
-            <Link href="/dashboard" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground font-bold">
-                E
-              </div>
-              <span className="text-lg font-bold tracking-tight text-sidebar-foreground">EduMaster 360</span>
+            <Link href={role === "club" ? "/club-dashboard" : "/dashboard"} className="flex items-center gap-2">
+              {logoUrl ? (
+                <img src={logoUrl} alt="Logo" className="h-8 w-8 rounded object-contain border border-border/20 bg-white/80 p-0.5" />
+              ) : (
+                <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground font-bold text-sm">
+                  {initials}
+                </div>
+              )}
+              <span className="text-lg font-bold tracking-tight text-sidebar-foreground line-clamp-1">{schoolName}</span>
             </Link>
           </SidebarHeader>
           <SidebarContent>
