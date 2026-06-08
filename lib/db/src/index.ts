@@ -24,7 +24,7 @@ const pool = new Pool({
 });
 
 // Add error handlers
-pool.on("error", (err) => {
+pool.on("error", (err: Error) => {
   console.error("[DB ERROR] Unexpected connection pool error:", err);
   process.exit(1);
 });
@@ -38,13 +38,14 @@ pool.on("remove", () => {
 });
 
 // Test connection immediately
-pool.query("SELECT NOW()", (err, res) => {
+pool.query("SELECT NOW()", (err: Error | null, res: any) => {
   if (err) {
+    const pgErr = err as any;
     console.error("[DB CRITICAL] Failed to connect to database:", err.message);
     console.error("[DB DEBUG] Error details:", {
-      code: err.code,
+      code: pgErr.code || "UNKNOWN",
       message: err.message,
-      detail: err.detail,
+      detail: pgErr.detail || null,
     });
     process.exit(1);
   } else {
